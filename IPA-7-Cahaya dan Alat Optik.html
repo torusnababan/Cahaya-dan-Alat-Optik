@@ -1,0 +1,190 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kuis IPA SMP Cahaya dan Alat Optik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="text"] {
+      width: 300px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    #timer {
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Kuis IPA SMP</h2>
+  <h2>By: Torus Manuntun Nababan, M.Pd</h2>
+  <h2>Materi: Cahaya dan Alat Optik</h2>
+  <!-- Form Identitas -->
+  <div id="identityForm">
+    <h3>Silakan isi identitas terlebih dahulu:</h3>
+    <label>Nama:
+      <input type="text" id="nama" required>
+    </label>
+    <label>Kelas:
+      <input type="text" id="kelas" required>
+    </label>
+    <label>Tahun Ajaran:
+      <input type="text" id="tahun" required>
+    </label>
+    <label>Nama Sekolah:
+      <input type="text" id="sekolah" required>
+    </label>
+    <button onclick="startQuiz()">Mulai Kuis</button>
+  </div>
+
+  <!-- Timer -->
+  <div id="timer" class="hidden"></div>
+
+  <!-- Form Soal -->
+  <form id="quizForm" class="hidden">
+    <div id="questionsContainer"></div>
+    <button type="button" onclick="submitQuiz()">Selesai dan Lihat Skor</button>
+  </form>
+
+  <div id="result" class="hidden"></div>
+
+  <script>
+    const questions = [
+      { question: "1. Cahaya merambat dalam garis...", options: ["Lurus", "Lengkung", "Melingkar", "Bergelombang"], answer: "Lurus" },
+    { question: "2. Benda yang dapat meneruskan cahaya seluruhnya disebut...", options: ["Opaque", "Transparan", "Translusen", "Hitam"], answer: "Transparan" },
+    { question: "3. Contoh benda opak adalah...", options: ["Kaca bening", "Air jernih", "Kayu", "Plastik bening"], answer: "Kayu" },
+    { question: "4. Bayangan yang dibentuk oleh cermin datar adalah...", options: ["Tegak dan nyata", "Tegak dan maya", "Terbalik dan nyata", "Terbalik dan maya"], answer: "Tegak dan maya" },
+    { question: "5. Alat optik yang digunakan untuk melihat benda sangat kecil adalah...", options: ["Mikroskop", "Teleskop", "Periskop", "Lup"], answer: "Mikroskop" },
+    { question: "6. Cermin yang permukaannya melengkung ke dalam disebut...", options: ["Cermin datar", "Cermin cembung", "Cermin cekung", "Cermin silinder"], answer: "Cermin cekung" },
+    { question: "7. Cermin cembung digunakan pada...", options: ["Kaca spion", "Mikroskop", "Lampu sorot", "Teleskop"], answer: "Kaca spion" },
+    { question: "8. Pembiasan cahaya terjadi ketika cahaya...", options: ["Dipantulkan", "Dihamburkan", "Dibelokkan saat melewati batas dua medium", "Diserap total"], answer: "Dibelokkan saat melewati batas dua medium" },
+    { question: "9. Alat optik yang bekerja berdasarkan prinsip pembiasan adalah...", options: ["Kaca spion", "Teleskop", "Lup", "Cermin cekung"], answer: "Lup" },
+    { question: "10. Lup berfungsi untuk...", options: ["Memantulkan cahaya", "Membelokkan cahaya", "Membesarkan bayangan", "Membagi cahaya"], answer: "Membesarkan bayangan" },
+    { question: "11. Teleskop digunakan untuk melihat benda...", options: ["Kecil dan dekat", "Besar dan dekat", "Kecil dan jauh", "Dekat dan terang"], answer: "Kecil dan jauh" },
+    { question: "12. Pembiasan cahaya pada prisma menghasilkan...", options: ["Bayangan", "Pantulan", "Spektrum warna", "Gelombang"], answer: "Spektrum warna" },
+    { question: "13. Cermin cekung dapat membentuk bayangan nyata jika...", options: ["Benda sangat dekat", "Benda sangat jauh", "Benda di titik fokus", "Benda di depan titik fokus"], answer: "Benda sangat jauh" },
+    { question: "14. Mata kita bisa melihat karena...", options: ["Cahaya dipantulkan dari benda ke mata", "Benda memancarkan cahaya ke mata", "Mata memancarkan cahaya", "Udara membawa cahaya ke mata"], answer: "Cahaya dipantulkan dari benda ke mata" },
+    { question: "15. Bayangan pada cermin cembung bersifat...", options: ["Nyata dan tegak", "Nyata dan terbalik", "Maya dan tegak", "Maya dan terbalik"], answer: "Maya dan tegak" },
+    { question: "16. Jika cahaya melewati dari udara ke air, maka cahaya akan...", options: ["Membelok menjauhi garis normal", "Tidak berubah arah", "Membelok mendekati garis normal", "Dipantulkan seluruhnya"], answer: "Membelok mendekati garis normal" },
+    { question: "17. Lensa cembung memiliki sifat...", options: ["Menyebarkan cahaya", "Memusatkan cahaya", "Tidak membiaskan cahaya", "Memantulkan cahaya"], answer: "Memusatkan cahaya" },
+    { question: "18. Lensa cekung digunakan untuk...", options: ["Memperbesar bayangan", "Memfokuskan cahaya", "Membetulkan rabun jauh", "Membetulkan rabun dekat"], answer: "Membetulkan rabun jauh" },
+    { question: "19. Sifat cahaya yang digunakan pada kamera adalah...", options: ["Pembiasan", "Pemantulan", "Interferensi", "Difraksi"], answer: "Pemantulan" },
+    { question: "20. Proyektor bekerja berdasarkan prinsip...", options: ["Pantulan cahaya", "Pembiasan cahaya", "Polarisasi cahaya", "Dispersi cahaya"], answer: "Pembiasan cahaya" }
+  ];
+
+    let quizTimer;
+    let countdownInterval;
+    const timeLimit = 20 * 60 * 1000; // 20 menit
+
+    function startQuiz() {
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      const tahun = document.getElementById('tahun').value;
+      const sekolah = document.getElementById('sekolah').value;
+
+      if (!nama || !kelas || !tahun || !sekolah) {
+        alert("Harap lengkapi semua data identitas.");
+        return;
+      }
+
+      document.getElementById('identityForm').classList.add('hidden');
+      document.getElementById('quizForm').classList.remove('hidden');
+      document.getElementById('timer').classList.remove('hidden');
+
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = "";
+      questions.forEach((q, index) => {
+        const div = document.createElement('div');
+        div.classList.add('question');
+        div.innerHTML = `<p>${q.question}</p>` + q.options.map(opt => `
+          <label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label><br>`).join('');
+        container.appendChild(div);
+      });
+
+      // Timer otomatis submit setelah 3 menit
+      quizTimer = setTimeout(() => {
+        alert("Waktu habis! Kuis akan otomatis disubmit.");
+        submitQuiz();
+      }, timeLimit);
+
+      // Countdown display
+      let remaining = timeLimit / 1000;
+      const timerDisplay = document.getElementById('timer');
+      timerDisplay.textContent = `Sisa waktu: ${remaining} detik`;
+      countdownInterval = setInterval(() => {
+        remaining--;
+        timerDisplay.textContent = `Sisa waktu: ${remaining} detik`;
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+    }
+
+    function submitQuiz() {
+      clearTimeout(quizTimer);
+      clearInterval(countdownInterval);
+
+      let score = 0;
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && selected.value === q.answer) {
+          score += 10;
+        }
+      });
+
+      document.getElementById('quizForm').classList.add('hidden');
+      document.getElementById('timer').classList.add('hidden');
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('hidden');
+
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      const tahun = document.getElementById('tahun').value;
+      const sekolah = document.getElementById('sekolah').value;
+
+      let message = "";
+      if (score >= 70) {
+        message = "<p style='color: green;'><strong>Selamat!</strong> Anda Sudah Bisa Melanjutkan ke Materi Berikutnya.</p>";
+      } else {
+        message = "<p style='color: red;'><strong>Mohon maaf.</strong> Silakan pelajari kembali materi ini sebelum melanjutkan ke materi berikutnya.</p>";
+      }
+
+      resultDiv.innerHTML = `
+        <h3>Hasil Kuis</h3>
+        <p><strong>Nama:</strong> ${nama}</p>
+        <p><strong>Kelas:</strong> ${kelas}</p>
+        <p><strong>Tahun Ajaran:</strong> ${tahun}</p>
+        <p><strong>Sekolah:</strong> ${sekolah}</p>
+        <p><strong>Skor Anda:</strong> ${score} dari 100</p>
+        ${message}
+      `;
+    }
+  </script>
+</body>
+</html>
+html
+SalinEdit
+<script>
+  function simpanHasil(nama, nilai) {
+    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+      method: "POST",
+      body: JSON.stringify({ nama: nama, nilai: nilai }),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.text())
+    .then(data => alert("Jawaban disimpan!"))
+    .catch(error => alert("Gagal menyimpan jawaban"));
+  }
+</script>
